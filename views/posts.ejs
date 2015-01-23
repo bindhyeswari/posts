@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/css/base.css"/>
+</head>
+<body>
+    <div ng-controller="MyController">
+        {{ message }}
+        <h1>List of all the posts</h1>
+        <ul>
+            <li ng-repeat="post in posts" data-id="{{post._id}}">{{post.title}}</li>
+        </ul>
+    </div>
+    <script src="/angular/angular.js"></script>
+    <script>
+        angular.module('myApp', []).factory('Post', function($http) {
+            return {
+                getAll: function () {
+                    return $http.get('/posts/all');
+                }
+            };
+        }).controller('MyController', function ($scope, Post) {
+            $scope.message = 'Hello World!';
+            Post.getAll().success(function (data) {
+                console.log(data);
+                $scope.posts = data;
+            }).error(function (data, status, headers, config) {
+                console.log(status);
+            });
+        });
+    </script>
+</body>
+</html>
