@@ -4,10 +4,22 @@ body {
     margin: 0;
 }
 
-input, select, textarea {
+input, select, textarea, button {
     font: 200 1em 'Helvetica Neue', 'Segoe UI', 'Droid Sans', 'Helvetica';
     outline: none;
     border: 1px solid #eee;
     padding: 0.35em 0.5em;
     background-color: transparent;
+}
+
+button {
+    margin: 1em;
+}
+
+button:hover {
+    background-color: #666;
+    color: white;
+    text-shadow: 0 1px 1px black;
+    transition: all 250ms ease;
+    cursor: pointer;
 }

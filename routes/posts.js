@@ -26,7 +26,31 @@ router.get('/all', function (req, res) {
     // send a response to the user to show it
 
 });
+router.get('/:id', function (req, res) {
 
+    // get a list of all the titles for all posts
+    PostModel.findById(req.params.id, function (err, results) {
+        if (err) {
+            res.status(500).json(err);
+        } else {
+            res.status(200).json(results);
+        }
+    });
+    // send a response to the user to show it
+
+});
+
+router.post('/', function(req, res) {
+    var post = new PostModel(req.body);
+    post.save(function (err, result) {
+        if (err) sendErrorResponse(err, res);
+        else res.status(200).json(result);
+    });
+});
+
+function sendErrorResponse(err, res) {
+    res.status(500).json(err);
+}
 // testPostCreation();
 
 function testPostCreation() {

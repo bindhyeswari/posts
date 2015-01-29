@@ -1,0 +1,41 @@
+
+<style>
+    section.create-post input, section.create-post textarea, section.create-post div.button-container {
+        display: block;
+        width: 50%;
+        margin: 1em auto;
+    }
+
+    section.create-post textarea {
+        font-size: 0.9em;
+    }
+
+    div.button-container {
+        padding: 0.35em 0.5em;
+        text-align: right;
+    }
+
+    div.button-container > button {
+        margin: 0;
+    }
+
+    div.button-container > span.message {
+        float: left;
+        color: darkgreen;
+    }
+    span.message.error {
+        color: red
+    }
+</style>
+
+
+<section class="create-post">
+    <div class="button-container"><a href="#/posts/all">View all posts</a></div>
+    <input type="text" placeholder="title of the post ... " ng-model="post.title"/>
+    <textarea rows="15" placeholder="body of the post ... " ng-model="post.body"></textarea>
+    <div class="button-container">
+        <span class="message" ng-class="response.style">{{response.text}}</span>
+        <button ng-click="save()">Save Post</button>
+    </div>
+
+</section>

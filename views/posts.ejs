@@ -6,22 +6,37 @@
     <link rel="stylesheet" href="/css/base.css"/>
 </head>
 <body>
-    <div ng-controller="MyController">
-        {{ message }}
-        <h1>List of all the posts</h1>
-        <ul>
-            <li ng-repeat="post in posts" data-id="{{post._id}}">{{post.title}}</li>
-        </ul>
-    </div>
+
+    <div ng-view></div>
     <script src="/angular/angular.js"></script>
+    <script src="/angular-route/angular-route.js"></script>
     <script>
-        angular.module('myApp', []).factory('Post', function($http) {
+        angular.module('myApp', ['ngRoute']).config(function ($routeProvider) {
+            $routeProvider.when('/posts/create', {
+                templateUrl: '/partials/create-post.html',
+                controller: 'CreatePostController'
+            }).when('/posts/all', {
+                templateUrl: '/partials/view-all-posts.html',
+                controller: 'ViewAllPostsController'
+            }).when('/posts/:id', {
+                templateUrl: '/partials/view-single-post.html',
+                controller: 'ViewSinglePostController'
+            }).otherwise({
+                redirectTo: '/posts/all'
+            });
+        }).factory('Post', function($http) {
             return {
                 getAll: function () {
                     return $http.get('/posts/all');
+                },
+                get: function (postid) {
+                    return $http.get('/posts/' + postid);
+                },
+                create: function (post) {
+                    return $http.post('/posts', post);
                 }
             };
-        }).controller('MyController', function ($scope, Post) {
+        }).controller('ViewAllPostsController', function ($scope, Post) {
             $scope.message = 'Hello World!';
             Post.getAll().success(function (data) {
                 console.log(data);
@@ -29,6 +44,39 @@
             }).error(function (data, status, headers, config) {
                 console.log(status);
             });
+            $scope.remove = function (post) {
+                console.log('you are trying to delete a post with the id: ' + post._id);
+            }
+        }).controller('CreatePostController', function ($scope, Post) {
+            $scope.post = {
+                title: '',
+                body: ''
+            };
+            $scope.response = {
+                style: {
+                    error: false
+                },
+                text: ''
+            };
+            $scope.save = function () {
+                Post.create($scope.post).success(function (data) {
+                    console.log(data);
+                    $scope.response.text = 'Successfully saved your post!';
+                    $scope.response.style.error = false;
+                }).error(function (data) {
+                    $scope.response.text = 'Sorry, we were not able to save your post!';
+                    $scope.response.style.error = true;
+                });
+                console.log($scope.post);
+            };
+        }).controller('ViewSinglePostController', function ($scope, Post, $routeParams) {
+            $scope.post = {
+                title: '',
+                body: ''
+            };
+            Post.get($routeParams.id).success(function (data) {
+                $scope.post = data;
+            }).error();
         });
     </script>
 </body>
